@@ -13,6 +13,7 @@ const MainPage = () => {
   const memberPageContainer = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState<number>(0);
   const [isHeader, setIsHeader] = useState<boolean>(true);
+
   const wheelHandler = (e: WheelEvent) => {
     e.preventDefault();
 
@@ -23,10 +24,12 @@ const MainPage = () => {
     }
 
     if (page === 2) {
+      console.log('page2 스크롤', e.deltaY);
       if (scrollContainer.current && e.deltaY !== 0) {
+        const moveY = e.deltaY < 100 ? 100 : e.deltaY;
         scrollContainer.current.scrollTo({
           left: 0,
-          top: e.deltaY + scrollContainer.current.scrollTop,
+          top: moveY + scrollContainer.current.scrollTop,
           behavior: 'smooth',
         });
       }
@@ -81,7 +84,11 @@ const MainPage = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       window.addEventListener('wheel', wheelHandler, { passive: false });
-    }, 100);
+    }, 1000);
+
+    window.addEventListener('touchstart', () => {
+      console.log('touchstart');
+    });
 
     return () => {
       clearInterval(timer);
