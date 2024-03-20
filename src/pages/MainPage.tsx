@@ -13,6 +13,7 @@ const MainPage = () => {
   const memberPageContainer = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState<number>(0);
   const [isHeader, setIsHeader] = useState<boolean>(true);
+  const wheelHandlerTimer = useRef<NodeJS.Timeout | null>(null);
 
   const wheelHandler = (e: WheelEvent) => {
     e.preventDefault();
@@ -26,10 +27,9 @@ const MainPage = () => {
     if (page === 2) {
       console.log('page2 스크롤', e.deltaY);
       if (scrollContainer.current && e.deltaY !== 0) {
-        const moveY = e.deltaY < 100 ? 100 : e.deltaY;
         scrollContainer.current.scrollTo({
           left: 0,
-          top: moveY + scrollContainer.current.scrollTop,
+          top: e.deltaY + scrollContainer.current.scrollTop,
           behavior: 'smooth',
         });
       }
@@ -82,17 +82,28 @@ const MainPage = () => {
   }, [page]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      window.addEventListener('wheel', wheelHandler, { passive: false });
-    }, 1000);
+    const handleWheel = (e: WheelEvent) => {
+      if (wheelHandlerTimer.current) {
+        clearTimeout(wheelHandlerTimer.current);
+      }
 
-    window.addEventListener('touchstart', () => {
-      console.log('touchstart');
-    });
+      wheelHandlerTimer.current = setTimeout(() => {
+        wheelHandler(e);
+      }, 500);
+    };
+
+    if (!scrollContainer.current) return;
+
+    const timer = setInterval(() => {
+      window.addEventListener('wheel', handleWheel, { passive: false });
+    }, 1000);
 
     return () => {
       clearInterval(timer);
-      window.removeEventListener('wheel', wheelHandler);
+      window.removeEventListener('wheel', handleWheel);
+      if (wheelHandlerTimer.current) {
+        clearTimeout(wheelHandlerTimer.current);
+      }
     };
   }, [page]);
 
