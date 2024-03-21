@@ -18,7 +18,7 @@ const ChatKwanKon = () => {
         delay={3}
       />
       <ChatItem text="비타 500 한잔해" color="kwankon" delay={4} />
-      <ChatImage src="img/img_kwankon_2.png" delay={5} />
+      <ChatImage src="img/img_kwankon_2.jpg" delay={5} />
       <ChatItem
         text={`✉️ E-mail: rhks33rhs@gmail.com\n🖥 Git: https://github.com/RyuKwanKon`}
         color="kwankon"
